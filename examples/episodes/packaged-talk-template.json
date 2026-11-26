@@ -1,0 +1,73 @@
+{
+ "name": "包装分镜模板",
+ "fps": 30,
+ "width": 1080,
+ "height": 1920,
+ "style_preset": "editorial",
+ "caption_theme": "interview",
+ "caption_size": 11.5,
+ "caption_mode": "single",
+ "caption_keywords": ["模板", "分屏", "总结"],
+ "transitions": "auto",
+ "music": {"preset": "warm", "bpm": 88, "volume": 0.16, "duck_volume": 0.07},
+ "beats": [
+  {"kind": "graphic", "recipe": "hook", "seconds": 3.0,
+   "data": {"eyebrow": "一句话说明主题", "title": "片头只放一个问题", "subtitle": "两到三秒，把观众留在这里"}},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 0.0, "end": 8.0,
+   "text": "第一句先给结论。这一段用分屏数字卡交代规模。",
+   "chapter": "01 先说规模",
+   "layout": {"kind": "stacked", "main": "bottom", "split": 0.42,
+              "with": {"graphic": {"recipe": "number",
+                                   "data": {"value": 3, "unit": "件事", "label": "口播里说到的数量"}}}}},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 8.0, "end": 20.0,
+   "text": "先确认交付范围，再安排设计排期。",
+   "caption": {"mode": "stack"}},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 20.0, "end": 34.0,
+   "text": "讲到一个要点清单，就把卡片放进口播分屏，每一条对着口播出现。",
+   "layout": {"kind": "stacked", "main": "bottom", "split": 0.5,
+              "with": {"graphic": {"recipe": "list",
+                                   "data": {"eyebrow": "口播里的要点",
+                                            "items": [{"title": "第一条", "at": 1.0},
+                                                      {"title": "第二条", "detail": "带一行说明", "at": 6.0},
+                                                      {"title": "第三条", "at": 11.0}]}}}}},
+
+  {"kind": "media", "source": "media/broll.mp4", "start": 0.0, "end": 4.0},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 34.0, "end": 48.0,
+   "text": "讲到步骤时把画面换到上栏，构图换一次，全片不会一直是同一种分屏。",
+   "caption": {"mode": "blocks"},
+   "layout": {"kind": "stacked", "main": "top", "split": 0.58,
+              "with": {"graphic": {"recipe": "steps",
+                                   "data": {"title": "三步流程",
+                                            "items": [{"title": "先做这一步", "at": 1.5},
+                                                      {"title": "再做这一步", "at": 6.5},
+                                                      {"title": "最后这一步", "at": 11.5}]}}}}},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 48.0, "end": 60.0,
+   "text": "一句短结论用整句弹入，全片不要只用一种字幕模式。",
+   "caption": {"mode": "single", "zone": "lower"}},
+
+  {"kind": "talk", "source": "media/talk.mp4", "start": 60.0, "end": 74.0,
+   "text": "第二个小节换一个标题，叠层自动变成左上角标签，不会压住卡片。",
+   "chapter": "02 第二个小节",
+   "layout": {"kind": "stacked", "main": "bottom", "split": 0.45,
+              "with": {"graphic": {"recipe": "checklist",
+                                   "data": {"title": "判断条件",
+                                            "items": [{"title": "条件一", "at": 1.0},
+                                                      {"title": "条件二", "at": 6.0},
+                                                      {"title": "条件三", "at": 11.0}]}}}}},
+
+  {"kind": "graphic", "recipe": "compare", "role": "summary",
+   "voice": {"source": "media/talk.mp4", "start": 74.0, "end": 86.0,
+             "text": "总结的时候用卡片配原声，人不用出镜。"},
+   "data": {"title": "总结只用一张对照卡",
+            "left": {"title": "左边", "items": ["三条以内", "名词短语", "和黄字一致"]},
+            "right": {"title": "右边", "items": ["不写整句", "不换风格", "不再口播"]}}},
+
+  {"kind": "graphic", "recipe": "end", "seconds": 3.4,
+   "data": {"brand": "片尾署名", "slogan": "一句话收尾", "cta": "关注下一期"}}
+ ]
+}

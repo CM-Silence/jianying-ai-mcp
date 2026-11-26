@@ -133,6 +133,19 @@ class CoreTests(unittest.TestCase):
         profile = analyze_reference_draft(self.settings, template_name, include_text=True)
         self.assertTrue(profile["success"])
         self.assertGreaterEqual(len(profile["profile"]["tracks"]), 3)
+        detailed = analyze_reference_draft(self.settings, template_name, include_edit_details=True)["profile"]
+        main = next(t for t in detailed["tracks"] if t["name"] == "主画面")["segments"][0]
+        self.assertEqual(main["source_duration_us"], 4_000_000)
+        self.assertEqual(main["keyframes"][0]["points"][-1]["time_us"], 3_800_000)
+        self.assertEqual(main["animations"][0]["duration"], 500_000)
+        captions = [t for t in detailed["tracks"] if t["type"] == "text"]
+        self.assertEqual([t["type_index"] for t in captions], [0, 1])
+        title = next(t for t in captions if t["name"] == "标题")["segments"][0]
+        self.assertNotIn("text", title)
+        self.assertEqual(title["text_styles"][0]["size"], 8)
+        compact = next(t for t in profile["profile"]["tracks"] if t["name"] == "标题")["segments"][0]
+        self.assertIn("text", compact)
+        self.assertNotIn("text_styles", compact)
 
         result = build_from_reference(
             self.settings,

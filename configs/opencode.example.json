@@ -3,20 +3,9 @@
   "mcp": {
     "jianying-ai": {
       "type": "local",
-      "command": [
-        "<PYTHON_EXECUTABLE>",
-        "-m",
-        "jianying_ai_mcp"
-      ],
+      "command": ["jianying-ai-mcp"],
       "enabled": true,
-      "environment": {
-        "JIANYING_DRAFT_ROOT": "<JIANYING_DRAFT_ROOT>",
-        "JIANYING_MCP_WORK_ROOT": "<WORK_ROOT>",
-        "JIANYING_EXE": "<JIANYING_EXECUTABLE>",
-        "JIANYING_DRAFT_CRYPTO": "<JY_DRAFTC_EXECUTABLE>",
-        "JIANYING_FFMPEG": "<FFMPEG_EXECUTABLE>",
-        "JIANYING_FFPROBE": "<FFPROBE_EXECUTABLE>"
-      }
+      "timeout": 7200000
     }
   }
 }

@@ -1,0 +1,18 @@
+{
+  "name": "订单出库前的三项核对",
+  "style_preset": "seller_reference",
+  "beats": [
+    {"kind":"talk","source":"seller-talk.mp4","start":0,"end":6,
+     "text":"客户最关心的是收到的货对不对。","intent":"建立客户担忧，由主讲完整说出第一句。"},
+    {"kind":"talk","source":"seller-talk.mp4","start":6,"end":12,
+     "text":"先对货号，再数件数，最后核地址。","intent":"同一画面展示三项核对，讲者留在下栏。",
+     "caption":{"mode":"single"},
+     "layout":{"kind":"stacked","main":"bottom","split":0.48,"with":{"graphic":{"recipe":"steps",
+       "data":{"title":"出库核对","items":[{"title":"核对货号","at":0},{"title":"清点件数","at":2},{"title":"核实地址","at":4}]}}}}},
+    {"kind":"talk","source":"seller-talk.mp4","start":12,"end":18,
+     "text":"三项全核对了，我们才封箱。","intent":"让观众看清胶带封住中缝的动作。",
+     "stock":{"query":"手持胶带机沿纸箱中缝封口","layout":{"kind":"stacked","main":"bottom","split":0.48}}},
+    {"kind":"talk","source":"seller-talk.mp4","start":18,"end":24,"intent":"回到讲者，两步收束到交付结果。",
+     "caption":{"mode":"blocks","cues":[{"at":0,"text":"先扫码"},{"at":2.5,"text":"再交付"}]}}
+  ]
+}

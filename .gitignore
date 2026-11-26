@@ -1,7 +1,12 @@
 .venv/
 .uv-cache/
 .build/
+build/
 .jianying-mcp/
+runtime/*/node_modules/
+runtime/installed/
+runtime/python/
+.pytest_cache/
 __pycache__/
 *.py[cod]
 *.egg-info/

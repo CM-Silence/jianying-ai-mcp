@@ -1,253 +1,99 @@
 from __future__ import annotations
 
+import json
 import os
-from typing import Any, Awaitable, Callable
+import sys
 
-from mcp.server.fastmcp import Context, FastMCP
+from mcp.server.fastmcp import FastMCP
 
-from .capabilities import capability_report
-from .config import Settings, compatibility_notice
-from .draft_ops import (
-    analyze_reference_draft as analyze_reference,
-    batch_from_template as run_template_batch,
-    build_from_reference as run_reference_build,
-    build_manifest,
+from . import openfilm_runtime
+from .mcp_tools import (
+    creator, design, desktop, drafts, jianying_audio, media, openfilm, production, repeated_takes, status, workflow,
 )
-from .draft_crypto import crypto_status
-from .video_observer import analyze_video, get_analysis_context, observer_status, save_observations
 
 
 mcp = FastMCP(
     "JianyingAIEditor",
     instructions=(
-        "面向剪映的批处理草稿引擎。先调用 get_jianying_capabilities；"
-        "每次执行必须向用户转述 compatibility.message。"
-        "新建复杂视频优先一次调用 build_draft；复刻结构用 build_from_reference；"
-        "批量换料用 batch_from_template。需要理解视频时先调用 analyze_video_source，"
-        "读取代表帧后调用 save_video_observations。默认先 dry_run，用户确认后再正式发布。"
+        "提供视频、图片、带时间码的对白、音乐和音效信息，以及剪辑、渲染与检查工具。"
+        "收到创作需求，先根据本期原声和三稿设计写出带时码的视听脚本，调用 plan_video_script。"
+        "每镜给出原话、画面目的、来源和构图。实拍讲主体，HTML 分项说明观点，场景动作写 stock.query 自动检索。"
+        "Agent 主动选候选，再用 execute_video_script 按脚本获取、入轨并回读。无合适素材记录 keep_camera。"
+        "字幕按语义，普通陈述单句，递进或列举整项淡入，横排约半字间距，过宽转上下排列。"
+        "已有定剪配方可用 plan_video_edit、deliver_video_edit。"
+        "卖家口播按三个参考草稿的 seller_reference 风格编排，参考稿只学分镜字体动画。按台词用 search_broll_shots 找剪映库存画面，通常每镜留 5–8 秒，"
+        "用 get_broll_shot 获取选段，place_broll_shots 在后台生成全屏或人物分屏的新草稿。"
+        "三稿的设计时码见 get_video_workflow(profile='reference',detail='profile')。需要选原话时用 analyze_media_batch。"
+        "用 list_video_editing_modules 找构图、字幕和文字标注模块。"
     ),
 )
 
-
-async def _stage(ctx: Context, current: int, total: int, title: str) -> None:
-    await ctx.info(f"[阶段] {title}")
-    await ctx.report_progress(current, total, title)
-
-
-async def _execute(
-    ctx: Context,
-    titles: list[str],
-    operation: Callable[[], dict[str, Any]],
-) -> dict[str, Any]:
-    await _stage(ctx, 0, len(titles), titles[0])
-    try:
-        result = operation()
-    except Exception as exc:
-        await ctx.error(f"[失败] {type(exc).__name__}: {exc}")
-        return {
-            "success": False,
-            "error_type": type(exc).__name__,
-            "error": str(exc),
-            "compatibility": compatibility_notice(Settings.from_env()),
-        }
-    for index, title in enumerate(titles[1:], start=1):
-        await _stage(ctx, index, len(titles), title)
-    return result
+for group in (workflow, status, drafts, jianying_audio, media, repeated_takes, creator, design, production, openfilm, desktop):
+    for tool in group.TOOLS:
+        mcp.add_tool(tool)
 
 
-@mcp.tool()
-async def get_jianying_capabilities(ctx: Context) -> dict[str, Any]:
-    """返回已验证、禁用和首版未纳入的能力，并检测本机剪映版本。规划前必须调用。"""
+def _compile_episode_cli(arguments: list[str]) -> dict:
+    from pathlib import Path
+
+    from .config import Settings
+    from .storyboard import compile_episode, read_episode_file
+
+    spec_path = Path(arguments[0]).expanduser().resolve()
+    media_root = arguments[arguments.index("--media-root") + 1] if "--media-root" in arguments else None
+    spec = read_episode_file(spec_path, media_root)
+    preview = int(arguments[arguments.index("--preview") + 1]) if "--preview" in arguments else 0
     settings = Settings.from_env()
-    await _stage(ctx, 1, 1, "读取能力与版本")
-    return {
-        "success": True,
-        "capabilities": capability_report(settings),
-        "compatibility": compatibility_notice(settings),
-        "paths": {
-            "draft_root": str(settings.draft_root),
-            "work_root": str(settings.work_root),
-            "jianying_exe": str(settings.jianying_exe) if settings.jianying_exe else None,
-        },
-        "video_observer": observer_status(settings),
-        "encrypted_draft_reader": crypto_status(settings),
-        "recommended_modes": ["creative", "strict", "reference"],
-    }
-
-
-@mcp.tool()
-async def analyze_video_source(
-    source: str,
-    ctx: Context,
-    detail: str = "efficient",
-    start: str | float | int | None = None,
-    end: str | float | int | None = None,
-    max_frames: int | None = None,
-    resolution: int = 512,
-    subtitle_path: str | None = None,
-    transcription: str = "auto",
-) -> dict[str, Any]:
-    """准备可供多模态 Agent 理解的视频上下文。
-
-    返回视频元数据、语句级时间戳字幕、SRT 路径和代表帧绝对路径。detail 可选
-    transcript/efficient/balanced/dense；默认 efficient。先粗看，再用 start/end 对候选区间复查。
-    transcription 可选 auto/none/groq/openai；仅在没有字幕且配置 API Key 时上传压缩音频，
-    不上传视频或画面。此工具负责提取，不会自行声称已看懂画面。
-    """
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["检查视频与依赖", "提取字幕和代表帧", "生成视频观察报告"],
-        lambda: analyze_video(
-            settings,
-            source,
-            detail=detail,
-            start=start,
-            end=end,
-            max_frames=max_frames,
-            resolution=resolution,
-            subtitle_path=subtitle_path,
-            transcription=transcription,
-        ),
-    )
-
-
-@mcp.tool()
-async def save_video_observations(
-    analysis_id: str,
-    observations: list[dict[str, Any]],
-    ctx: Context,
-    edit_candidates: list[dict[str, Any]] | None = None,
-) -> dict[str, Any]:
-    """保存 Agent 对代表帧的结构化理解，供后续剪辑规划复用。
-
-    observations 每项为 {time_ms, description, tags?, confidence?}；edit_candidates 每项为
-    {start_ms, end_ms, reason, confidence?}。只保存模型已经实际读取过的画面结论。
-    """
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["校验画面观察", "保存语义与候选片段"],
-        lambda: save_observations(settings, analysis_id, observations, edit_candidates),
-    )
-
-
-@mcp.tool()
-async def get_video_analysis_context(
-    analysis_id: str,
-    ctx: Context,
-    start_ms: int | None = None,
-    end_ms: int | None = None,
-    offset: int = 0,
-    limit: int = 120,
-) -> dict[str, Any]:
-    """按时间范围和分页读取已缓存的视频字幕、代表帧及观察路径。
-
-    长视频不要一次加载完整字幕；从 offset=0 开始，根据 next_offset 继续。指定
-    start_ms/end_ms 可只取得候选区间，避免重复抽帧和浪费上下文。
-    """
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["读取缓存视频报告", "筛选时间范围与字幕页"],
-        lambda: get_analysis_context(
-            settings,
-            analysis_id,
-            start_ms=start_ms,
-            end_ms=end_ms,
-            offset=offset,
-            limit=limit,
-        ),
-    )
-
-
-@mcp.tool()
-async def analyze_reference_draft(
-    draft_name: str,
-    ctx: Context,
-    include_text: bool = False,
-) -> dict[str, Any]:
-    """读取参考草稿并提取剪辑蓝图；已配置读取器时支持剪映加密草稿且不修改源文件。"""
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["读取参考草稿", "提取轨道与节奏", "保存剪辑蓝图"],
-        lambda: analyze_reference(settings, draft_name, include_text=include_text),
-    )
-
-
-@mcp.tool()
-async def build_draft(
-    manifest: dict[str, Any],
-    ctx: Context,
-    dry_run: bool = True,
-) -> dict[str, Any]:
-    """一次提交紧凑编辑清单并生成新草稿。
-
-    manifest 结构：
-    - draft: {name, width?, height?, fps?}
-    - tracks: [{type, name, segments:[...]}]
-    - srt_imports?: [{source, track_name?, style?, clip?}]
-
-    轨道 type 支持 video/audio/text/sticker/effect/filter。时间字段使用 start、duration；
-    媒体可加 source_start/source_duration、speed。具体字段见 Skill 的 manifest-schema.md。
-    默认 dry_run=true，只在暂存区完整构建和校验；确认后传 false 发布到剪映草稿目录。
-    """
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["校验编辑清单", "构建暂存草稿", "校验草稿结构", "发布草稿" if not dry_run else "完成试运行"],
-        lambda: build_manifest(settings, manifest, dry_run=dry_run),
-    )
-
-
-@mcp.tool()
-async def build_from_reference(
-    reference_draft: str,
-    new_draft_name: str,
-    ctx: Context,
-    replacements: list[dict[str, Any]] | None = None,
-    text_replacements: list[dict[str, Any]] | None = None,
-    dry_run: bool = True,
-) -> dict[str, Any]:
-    """复制明文或可解密参考草稿的剪辑蓝图，并按轨道与片段下标替换素材或文本。
-
-    replacements 项：{track_type, track_name? 或 track_index?, segment_index, source,
-    source_start?, source_duration?}。text_replacements 项：{track_name? 或 track_index?,
-    segment_index, text, recalc_style?}。
-    """
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["读取参考草稿", "复制剪辑蓝图", "替换素材与文本", "校验新草稿", "发布新草稿" if not dry_run else "完成试运行"],
-        lambda: run_reference_build(
-            settings,
-            reference_draft,
-            new_draft_name,
-            replacements,
-            text_replacements,
-            dry_run=dry_run,
-        ),
-    )
-
-
-@mcp.tool()
-async def batch_from_template(
-    template_draft: str,
-    jobs: list[dict[str, Any]],
-    ctx: Context,
-    dry_run: bool = True,
-) -> dict[str, Any]:
-    """基于一个明文模板批量生成草稿。每个 job 包含 name、replacements、text_replacements。"""
-    settings = Settings.from_env()
-    return await _execute(
-        ctx,
-        ["校验批量任务", "逐份复制与替换", "校验批量草稿", "发布批量结果" if not dry_run else "完成批量试运行"],
-        lambda: run_template_batch(settings, template_draft, jobs, dry_run=dry_run),
+    return compile_episode(
+        settings, spec, preview_frames=preview,
+        mixdown="--mixdown" in arguments, openfilm_project="--openfilm" in arguments,
     )
 
 
 def main() -> None:
+    command = sys.argv[1] if len(sys.argv) > 1 else ""
+    if command and hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+    if command in {"-h", "--help", "help"}:
+        print("jianying-ai-mcp [tools [工具名] | call 工具名 [--args JSON | --args-file 文件] | serve-http [--port 端口]]\n"
+              "tools 和 call 可传 --url 连接本地 HTTP 服务。无子命令时启动 MCP stdio。\n"
+              "安装与验收命令有 setup、doctor、self-test、openfilm-status、install-openfilm 和 compile-episode。")
+        return
+    if command in {"tools", "call", "serve-http"}:
+        from .client_cli import run_client, serve_http
+        if command == "serve-http":
+            serve_http(mcp, sys.argv[2:])
+        else:
+            run_client(command, sys.argv[2:])
+        return
+    if command == "setup":
+        from .setup_runtime import setup
+        print(json.dumps(setup(), ensure_ascii=False, indent=2))
+        return
+    if command == "doctor":
+        from .config import Settings
+        print(json.dumps(status._capabilities(Settings.from_env()), ensure_ascii=False, indent=2))
+        return
+    if command == "self-test":
+        import asyncio
+        from pathlib import Path
+        from .self_test import run
+        result = asyncio.run(run(Path(sys.argv[2]) if len(sys.argv) > 2 else None))
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        if not result["passed"]:
+            raise SystemExit(1)
+        return
+    if command in {"install-openfilm", "install_openfilm"}:
+        print(json.dumps(openfilm_runtime.install_runtime(), ensure_ascii=False, indent=1))
+        return
+    if command in {"openfilm-status", "openfilm_status"}:
+        print(json.dumps(openfilm_runtime.describe_runtime(), ensure_ascii=False, indent=1))
+        return
+    if command in {"compile-episode", "compile_episode"}:
+        if len(sys.argv) < 3:
+            raise SystemExit("用法: jianying-ai-mcp compile-episode <spec.json> [--mixdown] [--preview N]")
+        print(json.dumps(_compile_episode_cli(sys.argv[2:]), ensure_ascii=False, indent=1))
+        return
     transport = os.environ.get("JIANYING_MCP_TRANSPORT", "stdio")
     if transport not in {"stdio", "sse", "streamable-http"}:
         raise ValueError(f"不支持的 JIANYING_MCP_TRANSPORT: {transport}")

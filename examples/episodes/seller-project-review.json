@@ -1,0 +1,88 @@
+{
+  "name": "出库核对 · 分镜模板",
+  "width": 1080,
+  "height": 1920,
+  "fps": 30,
+  "style_preset": "seller_reference",
+  "beats": [
+    {
+      "kind": "talk",
+      "source": "media/seller-talk.mp4",
+      "start": 0,
+      "end": 6,
+      "text": "订单确认后，仓库会开始备货。"
+    },
+    {
+      "kind": "talk",
+      "source": "media/seller-talk.mp4",
+      "start": 6,
+      "end": 12,
+      "text": "先核对货号，再装箱。"
+    },
+    {
+      "kind": "talk",
+      "source": "media/seller-talk.mp4",
+      "start": 12,
+      "end": 18,
+      "text": "包裹经过扫码，订单状态就会更新。"
+    },
+    {
+      "kind": "talk",
+      "source": "media/seller-talk.mp4",
+      "start": 18,
+      "end": 26,
+      "text": "出库前，我们逐项确认货号、数量和地址。",
+      "layout": {
+        "kind": "stacked",
+        "main": "bottom",
+        "split": 0.46,
+        "with": {
+          "graphic": {
+            "recipe": "steps",
+            "data": {
+              "title": "出库前三项核对",
+              "items": [
+                {
+                  "title": "核对货号",
+                  "at": 0
+                },
+                {
+                  "title": "清点数量",
+                  "at": 2.4
+                },
+                {
+                  "title": "确认地址",
+                  "at": 5.1
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "kind": "talk",
+      "source": "media/seller-talk.mp4",
+      "start": 26,
+      "end": 32,
+      "text": "这三项对上了，才交给快递。"
+    }
+  ],
+  "broll": [
+    {
+      "shot_id": "替换为剪映库的核对装箱镜头ID",
+      "at": 6,
+      "duration": 6
+    },
+    {
+      "shot_id": "替换为剪映库的包裹扫码镜头ID",
+      "at": 12,
+      "duration": 6,
+      "layout": {
+        "kind": "stacked",
+        "main": "bottom",
+        "split": 0.48
+      }
+    }
+  ]
+}

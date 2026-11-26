@@ -1,0 +1,34 @@
+{
+  "name": "从选段到交付",
+  "style_preset": "editorial",
+  "music": "warm",
+  "width": 480,
+  "height": 800,
+  "fps": 25,
+  "clips": [
+    {
+      "source": "compat_test_video.mp4",
+      "start": 0.4,
+      "end": 2.8,
+      "chapter": "",
+      "caption": "镜头与要点同步出现",
+      "highlights": ["要点"],
+      "panel": {
+        "recipe": "steps",
+        "data": {
+          "title": "如何定剪",
+          "items": [
+            {"title": "选择原话", "at": 0.2},
+            {"title": "对齐画面", "at": 1.2}
+          ]
+        }
+      }
+    },
+    {
+      "source": "compat_test_image.png",
+      "hold_seconds": 1.6,
+      "chapter": "审片",
+      "caption": "核对字幕和声音"
+    }
+  ]
+}

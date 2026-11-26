@@ -97,6 +97,7 @@ def _decrypt_with_helper(settings: Settings, source: Path, *, label: str) -> dic
             completed = subprocess.run(
                 command,
                 cwd=temp,
+                stdin=subprocess.DEVNULL,
                 capture_output=True,
                 text=True,
                 encoding="utf-8",

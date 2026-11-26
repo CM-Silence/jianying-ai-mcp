@@ -1,0 +1,7 @@
+{
+  "name": "jianying-render-runtime",
+  "private": true,
+  "dependencies": {
+    "openfilm": "0.4.1"
+  }
+}

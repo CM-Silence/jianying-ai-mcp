@@ -19,7 +19,7 @@ ENDPOINTS = {
 
 
 def _run(command: list[str], label: str) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    result = subprocess.run(command, stdin=subprocess.DEVNULL, capture_output=True, text=True, encoding="utf-8", errors="replace")
     if result.returncode != 0:
         raise RuntimeError(f"{label}失败: {result.stderr.strip()}")
     return result
@@ -70,11 +70,16 @@ def _post(audio_path: Path, backend: str, api_key: str) -> list[dict]:
     for item in data.get("segments") or []:
         text = str(item.get("text") or "").strip()
         if text:
-            segments.append({
+            segment = {
                 "start_ms": round(float(item.get("start") or 0) * 1000),
                 "end_ms": round(float(item.get("end") or 0) * 1000),
                 "text": text,
-            })
+            }
+            for metric in ("no_speech_prob", "avg_logprob", "compression_ratio"):
+                value = item.get(metric)
+                if isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value):
+                    segment[metric] = round(value, 3)
+            segments.append(segment)
     if not segments and str(data.get("text") or "").strip():
         segments.append({"start_ms": 0, "end_ms": 0, "text": str(data["text"]).strip()})
     return segments
@@ -103,7 +108,7 @@ def transcribe_video(
     work_dir.mkdir(parents=True, exist_ok=True)
     audio = work_dir / "audio.mp3"
     _run([
-        str(ffmpeg), "-hide_banner", "-loglevel", "error", "-y", "-i", str(video_path),
+        str(ffmpeg), "-hide_banner", "-loglevel", "error", "-y", "-protocol_whitelist", "file", "-i", str(video_path),
         "-vn", "-acodec", "libmp3lame", "-ar", "16000", "-ac", "1", "-b:a", "64k", str(audio),
     ], "提取转写音频")
     if not audio.is_file() or audio.stat().st_size == 0:

@@ -1,25 +1,42 @@
 [build-system]
-requires = ["setuptools>=69"]
+requires = ["setuptools==84.2.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "jianying-ai-mcp"
-version = "0.3.0"
+version = "0.4.0"
 description = "Video-aware, batch-first MCP server for safe Jianying draft generation and template reuse"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
 requires-python = ">=3.12"
 dependencies = [
   "mcp>=1.12,<2",
-  "pyJianYingDraft==0.3.0",
+  "pyJianYingDraft==0.3.1",
+  "Pillow>=9.2",
+  "opencc-python-reimplemented>=0.1.7,<1",
+  "pypinyin>=0.55,<1",
+  "numpy>=1.26",
+  "opencv-python-headless>=4.10,<4.12",
+  "pydantic>=2,<3",
+  "ffmpeg-binaries==1.1.0",
+  "nodejs-wheel-binaries>=22.16,<23",
+  "yt-dlp",
+  "faster-whisper>=1.1,<2",
+  "edge-tts>=7,<8",
 ]
 
 [project.optional-dependencies]
 video-url = ["yt-dlp"]
+local-asr = ["faster-whisper>=1.1,<2"]
+online-tts = ["edge-tts>=7,<8"]
 
 [project.scripts]
 jianying-ai-mcp = "jianying_ai_mcp.server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+jianying_ai_mcp = ["openfilm_av.mjs", "openfilm_draft.mjs", "workflow_guides/*.md", "runtime_spec/*.json", "runtime_spec/desktop/*.toml", "runtime_spec/desktop/*.lock", "runtime_spec/win-x64/*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

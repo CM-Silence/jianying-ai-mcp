@@ -2,8 +2,8 @@
 
 ## 测试前
 
-1. 安装 Python 3.12、ffmpeg/ffprobe，并以 editable 模式安装项目。
-2. 修改 MCP 配置中的剪映、草稿、工作目录和 ffmpeg 路径。
+1. Windows x64 运行 `./install.ps1`，导入生成的 stdio 或 OpenCode 服务条目。
+2. 运行 `runtime/python/Scripts/jianying-ai-mcp.exe self-test runtime/installed/mcp-stdio.json`，阅读隔离草稿和素材迁移复刻报告。原生 MP4 需另在可交互剪映中验收。
 3. 启动客户端后先要求 Agent 调用 `get_jianying_capabilities`。
 4. 不要把真实 API Key、客户素材或未授权视频提交到 Issue。
 

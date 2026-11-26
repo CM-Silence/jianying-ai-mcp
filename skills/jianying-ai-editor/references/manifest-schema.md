@@ -62,7 +62,14 @@
 
 - `fade`: `{in, out}`
 - `effects`: `[{category: scene|tone|speech_to_song, name, params?}]`
-- 首版拒绝音量关键帧。
+
+## 实验性效果
+
+调用 `build_draft` 时，在 `manifest` 外传 `allow_experimental_effects=true`。先用 `dry_run=true` 验证写入，再用小样检查剪映实际效果。
+
+- 视频或图片片段的 `mask` 使用 `{name, center_x?, center_y?, size?, rotation?, feather?, invert?, rect_width?, round_corner?}`。用 `list_jianying_presets(category="mask")` 查询可用名称。中心用像素，旋转用角度，大小和矩形宽度用大于 0 且不超过 1 的比例，羽化和圆角用 0–100。宽度和圆角仅用于矩形蒙版。
+- 底层视频轨的 `background_filling` 使用 `{"type": "blur", "blur": 0.2}` 或 `{"type": "color", "color": "#000000FF"}`。模糊强度范围为 0–1，颜色必须是 `#RRGGBBAA`。
+- 视频及音频片段的 `keyframes` 可加 `{"property": "volume", "time": "0.5s", "value": 0.4}`。时间以片段起点为基准，使用整数微秒或带单位的时间字符串，范围为 0 至片段时长。音量必须大于或等于 0，`1.0` 为原音量。同一片段的音量关键帧时间需唯一。
 
 ## 文本片段
 
@@ -96,6 +103,18 @@
   ]
 }
 ```
+
+SRT 默认以 `mode: "text"` 导入普通文本轨。显式传 `mode: "native"` 可写入剪映原生字幕任务与轨道。可选传 `language`（如 `zh-CN` 或 `en-US`）、`style` 和 `clip`。原生模式接受绝对路径的 UTF-8 `.srt`，支持带符号的微秒数或时间字符串作为 `time_offset`，偏移后的字幕按顺序排列、互不重叠，并落在已有草稿时长内。字幕轨名称需唯一。请在目标剪映版本抽检原生字幕样式和统一编辑行为。
+
+两个模式均支持可选的 `decoration`，可用 `font`、`bubble`、`flower_text_resource_id`、`border`、`background`、`shadow` 和 `animations`。字体和动画名称可以从 `list_jianying_presets` 查询。气泡使用 `{effect_id, resource_id}`，花字使用对应的资源 ID。
+
+两个模式都可用 `highlights=[{"cue":1,"ranges":[[0,2]]}]` 高亮一条字幕的前两个字符。`cue` 按导入顺序从 1 开始，区间按去除 SRT 格式标签并解码后的正文计算，左闭右开。可用 `highlight_color` 传三个 0–1 数值覆盖暖黄色。
+
+`compile_video_timeline` 支持 `editorial`、`documentary`、`broadcast` 和 `clean`，可通过 `list_video_style_presets` 挑选。`shots[].chapter` 声明章节入口，编译器把该风格的内置转场加在前一镜，并生成 MP4 对应效果。手选转场时，`shots[].transition` 写剪映资源，`shots[].portable_transition` 写同一切点的 MP4 效果，`frames` 为偶数且不超过相邻较短镜头。标题细调可在文字叠层填写 `portable_animation`，如 `{kind:"rise",duration_us:240000}`，与剪映 `animations` 同时保存在各自输出中。
+
+### 剪映曲库与音效
+
+音频轨片段可使用 `jianying_audio: {draft_path, material_id}` 代替 `source`。参数来自 `list_jianying_audio_assets`，片段仍按 `start`、`duration`、`source_start` 和 `source_duration` 排期。帧级时间线的 `bgm` 和 `audio[]` 也接受相同选择器。本地可读资源可混音。编辑器引用由剪映在打开草稿时解析。
 
 ## 参考草稿替换
 

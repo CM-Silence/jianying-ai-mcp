@@ -1,0 +1,462 @@
+{
+ "name": "美工是外包还是自己养",
+ "fps": 30,
+ "width": 1080,
+ "height": 1920,
+ "style_preset": "editorial",
+ "caption_theme": "interview",
+ "music": {
+  "preset": "warm",
+  "bpm": 88,
+  "root_note": 60,
+  "volume": 0.16,
+  "duck_volume": 0.07
+ },
+ "beats": [
+  {
+   "kind": "graphic",
+   "recipe": "hook",
+   "seconds": 3.0,
+   "sfx": "swell",
+   "sfx_gain_db": -12,
+   "data": {
+    "eyebrow": "跨境视觉 · 亚马逊",
+    "title": "美工\n外包？还是自己养",
+    "subtitle": "没有标准答案，只有你处在哪个阶段"
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C022_261020LO.MP4",
+   "start": 7.04,
+   "end": 12.04,
+   "text": "我做了这么多年跨境视觉，服务过几千家亚马逊卖家。",
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "number",
+      "data": {
+       "value": 3000,
+       "unit": "+",
+       "label": "服务过的亚马逊卖家"
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C022_261020LO.MP4",
+   "start": 12.04,
+   "end": 16.64,
+   "text": "有刚起步的小卖家，也有体量比较大的品牌卖家。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C022_261020LO.MP4",
+   "start": 16.64,
+   "end": 27.88,
+   "text": "说实话，这个问题没有标准答案。但有一个很现实的判断：你现在处在什么阶段，就选什么样的方式。",
+   "caption": {
+    "mode": "stack"
+   }
+  },
+  {
+   "kind": "graphic",
+   "recipe": "quote",
+   "seconds": 2.6,
+   "sfx": "impact",
+   "sfx_gain_db": -10,
+   "data": {
+    "text": "处在什么阶段\n就选什么方式",
+    "source": "阿兰"
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C029_261020VI.MP4",
+   "start": 1.01,
+   "end": 10.61,
+   "text": "先说外包。最大的好处就是快，而且灵活。上线的时候，可以同时安排几个人一起干。",
+   "chapter": "01 先说外包",
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "list",
+      "data": {
+       "eyebrow": "外包的好处",
+       "items": [
+        {
+         "title": "快",
+         "at": 3.05
+        },
+        {
+         "title": "灵活",
+         "at": 3.92
+        },
+        {
+         "title": "上线期多人并行",
+         "at": 6.54
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C029_261020VI.MP4",
+   "start": 10.61,
+   "end": 19.61,
+   "text": "日常维护的时候，也不用养着一堆人空转。对很多亚马逊卖家来说，现金流会舒服很多。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C029_261020VI.MP4",
+   "start": 19.61,
+   "end": 26.81,
+   "text": "而且专业的跨境设计师，确实更懂亚马逊这一套逻辑。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C053_261020OP.MP4",
+   "start": 1.78,
+   "end": 12.74,
+   "text": "他们懂得主图要抓点击，副图要打消疑虑，A+要让人赶着下单，还懂得欧美消费者的审美。",
+   "layout": {
+    "kind": "stacked",
+    "main": "top",
+    "with": {
+     "graphic": {
+      "recipe": "list",
+      "data": {
+       "eyebrow": "专业设计师懂的",
+       "items": [
+        {
+         "title": "主图",
+         "detail": "抓点击",
+         "at": 1.03
+        },
+        {
+         "title": "副图",
+         "detail": "打消疑虑",
+         "at": 2.81
+        },
+        {
+         "title": "A+",
+         "detail": "促成下单",
+         "at": 4.89
+        }
+       ]
+      }
+     }
+    },
+    "split": 0.5
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C069_261020CZ.MP4",
+   "start": 0.59,
+   "end": 14.39,
+   "text": "但外包也有坑。我见过一些卖家，把图片一发过来就说「你看着做」，结果做出来不对，改，再改，最后双方都很烦。",
+   "chapter": "02 外包的坑",
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "steps",
+      "data": {
+       "title": "需求是怎么失控的",
+       "items": [
+        {
+         "title": "只说「你看着做」",
+         "at": 7.06
+        },
+        {
+         "title": "做出来不对",
+         "at": 8.95
+        },
+        {
+         "title": "改了又改",
+         "at": 10.83
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C069_261020CZ.MP4",
+   "start": 14.39,
+   "end": 22.71,
+   "text": "还耽误了上新的节奏。所以外包能不能用好，关键就看你能不能把需求讲清楚。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C076_261020GD.MP4",
+   "start": 0.72,
+   "end": 10.52,
+   "text": "如果你找外包，尽量做到三件事。第一，别只说「高级一点」，先做一个详细的需求表。",
+   "chapter": "03 找外包做到三件事",
+   "caption": {
+    "mode": "blocks"
+   },
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "headline",
+      "data": {
+       "eyebrow": "第一件事",
+       "title": "先写需求表"
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C082_261020QY.MP4",
+   "start": 11.54,
+   "end": 18.94,
+   "text": "把竞品的链接放上去，目标人群是谁，哪些东西不能出现。",
+   "caption": {
+    "mode": "blocks"
+   },
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "list",
+      "data": {
+       "eyebrow": "需求表里要有",
+       "items": [
+        {
+         "title": "竞品链接",
+         "at": 0.2
+        },
+        {
+         "title": "目标人群",
+         "at": 2.75
+        },
+        {
+         "title": "禁区清单",
+         "at": 5.96
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C082_261020QY.MP4",
+   "start": 18.94,
+   "end": 26.24,
+   "text": "主图想要什么角度，副图和A+要展示什么卖点和文案，一条一条列出来。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C095_261020EM.MP4",
+   "start": 1.26,
+   "end": 9.06,
+   "text": "第二，先试稿，满意之后再谈长期合作。先花一笔小钱，做两张图。",
+   "layout": {
+    "kind": "stacked",
+    "main": "top",
+    "with": {
+     "graphic": {
+      "recipe": "headline",
+      "data": {
+       "eyebrow": "第二件事",
+       "title": "先试稿\n再谈长期"
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C095_261020EM.MP4",
+   "start": 13.46,
+   "end": 23.06,
+   "text": "先沟通，看顺不顺；看做出来的质感强不强，场景真不真实，风格是不是你们想要的。",
+   "layout": {
+    "kind": "stacked",
+    "main": "top",
+    "with": {
+     "graphic": {
+      "recipe": "checklist",
+      "data": {
+       "title": "试稿看三点",
+       "items": [
+        {
+         "title": "质感",
+         "at": 3.34
+        },
+        {
+         "title": "场景真实",
+         "at": 4.8
+        },
+        {
+         "title": "风格对路",
+         "at": 6.54
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C114_261020OV.MP4",
+   "start": 1.23,
+   "end": 11.07,
+   "text": "第三，图好不好，用数据说话。上线跑一段时间广告，看点击率、停留时长和转化率。",
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "list",
+      "data": {
+       "eyebrow": "第三件事 · 看数据",
+       "items": [
+        {
+         "title": "点击率",
+         "at": 6.31
+        },
+        {
+         "title": "停留时长",
+         "at": 7.23
+        },
+        {
+         "title": "转化率",
+         "at": 8.77
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C114_261020OV.MP4",
+   "start": 11.07,
+   "end": 17.47,
+   "text": "数据起来了，方向就对了；数据不行，就改图，或者换团队。"
+  },
+  {
+   "kind": "talk",
+   "source": "A022C114_261020OV.MP4",
+   "start": 17.47,
+   "end": 32.03,
+   "text": "那什么时候该养人呢？产品线已经稳定，品牌调性要长期统一，图片和视频的素材量很大——这时候养一个懂品牌、也懂运营的设计负责人，会更划算。",
+   "chapter": "04 什么时候该自己养",
+   "layout": {
+    "kind": "stacked",
+    "main": "bottom",
+    "with": {
+     "graphic": {
+      "recipe": "checklist",
+      "data": {
+       "title": "该自己养的信号",
+       "items": [
+        {
+         "title": "产品线稳定",
+         "at": 2.07
+        },
+        {
+         "title": "调性要统一",
+         "at": 3.8
+        },
+        {
+         "title": "素材量大",
+         "at": 7.5
+        }
+       ]
+      }
+     }
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C137_261020TH.MP4",
+   "start": 0.37,
+   "end": 9.85,
+   "text": "但执行层，不一定什么都自己干。很多卖家是内部定标准，外包做产能，效率反而更高。"
+  },
+  {
+   "kind": "graphic",
+   "recipe": "compare",
+   "role": "summary",
+   "voice": {
+    "source": "A022C137_261020TH.MP4",
+    "start": 9.85,
+    "end": 21.65,
+    "text": "把合规当底线，把数据当标准，把合同当防火墙。做到这三点，外包就是陪你一起成长的视觉团队。"
+   },
+   "data": {
+    "title": "最好的结构",
+    "left": {
+     "title": "内部 · 定标准",
+     "items": [
+      "品牌调性",
+      "合规红线",
+      "数据标准"
+     ]
+    },
+    "right": {
+     "title": "外包 · 做产能",
+     "items": [
+      "批量出图",
+      "大促突击",
+      "多店并行"
+     ]
+    }
+   }
+  },
+  {
+   "kind": "talk",
+   "source": "A022C149_261020OG.MP4",
+   "start": 0.62,
+   "end": 12.02,
+   "text": "我是阿兰，把跨境视觉这件事，做细、做准、做透。如果你也在纠结要不要找外包，评论区留「外包」。"
+  },
+  {
+   "kind": "graphic",
+   "recipe": "end",
+   "seconds": 3.4,
+   "sfx": "swell",
+   "sfx_gain_db": -12,
+   "data": {
+    "brand": "阿兰 · 跨境视觉",
+    "slogan": "把跨境视觉\n做细 做准 做透",
+    "cta": "评论区留「外包」"
+   }
+  }
+ ],
+ "caption_mode": "single",
+ "caption_keywords": [
+  "外包",
+  "自养",
+  "需求表",
+  "试稿"
+ ],
+ "transitions": "auto"
+}
